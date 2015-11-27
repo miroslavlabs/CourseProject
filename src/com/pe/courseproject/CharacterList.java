@@ -1,4 +1,3 @@
-package com.pe.courseproject;
 
 /**
  * Created by Nikolay on 27.11.2015 г..
@@ -46,7 +45,7 @@ public class CharacterList {
 
     //Finds a middle index based on the probability of characters in the List
     //The middle index is the last index of the first half
-    public int splitListBasedOnProbability(int startIndex, int endIndex) throws Exception {
+    public int findMiddleIndexBasedOnProbability(int startIndex, int endIndex) throws Exception {
         int middleIndex = 0;
 
         //Valid input check

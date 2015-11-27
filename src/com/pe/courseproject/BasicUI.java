@@ -1,4 +1,3 @@
-package com.pe.courseproject;
 
 /**
  * Created by Nikolay on 27.11.2015 г..
@@ -32,6 +31,7 @@ public class BasicUI extends Application {
     private Stage mainStage;
 
     private Map<Character,Double> charMap;
+    private File file;
 
     public static void main(String[] args) {
         launch(args);
@@ -77,15 +77,7 @@ public class BasicUI extends Application {
 
     private void processData() {
 
-    }
-
-    private void openFileChooser(TextField path) {
-
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        File file = fileChooser.showOpenDialog(mainStage);
         if(file != null) {
-            path.setText(file.getAbsolutePath());
             charMap = TextFile.obtainCharactersProbabilityFromFile(file);
             CharacterList list = new CharacterList(charMap);
             try {
@@ -96,6 +88,16 @@ public class BasicUI extends Application {
 
         }
 
+    }
+
+    private void openFileChooser(TextField path) {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        file = fileChooser.showOpenDialog(mainStage);
+        if(file != null) {
+            path.setText(file.getAbsolutePath());
+        }
 
     }
 }
