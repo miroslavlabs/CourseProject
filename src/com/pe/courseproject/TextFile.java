@@ -1,5 +1,3 @@
-package com.pe.courseproject;
-
 
 import java.io.BufferedReader;
 import java.io.File;

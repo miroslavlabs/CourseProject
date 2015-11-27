@@ -1,6 +1,5 @@
-﻿package com.pe.courseproject;
 /**
- * Created by Nikolay on 26.11.2015 г..
+ * Created by Nikolay on 27.11.2015 г..
  */
 
 import javafx.application.Application;
@@ -17,7 +16,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 
 public class BasicUI extends Application {
@@ -38,7 +36,7 @@ public class BasicUI extends Application {
     }
 
     @Override
-        public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) {
         mainStage = primaryStage;
         primaryStage.setTitle("Hello Genoff!");
 
@@ -62,6 +60,7 @@ public class BasicUI extends Application {
         hBox.setPadding(new Insets(15, 15, 15, 15));
         hBox.setSpacing(5);
         TextField path = new TextField();
+        path.setEditable(false);
 
         Button browseButton = new Button("Browse");
         browseButton.setOnAction(event -> openFileChooser(path));
@@ -98,3 +97,4 @@ public class BasicUI extends Application {
 
     }
 }
+
