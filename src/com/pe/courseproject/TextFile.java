@@ -1,5 +1,6 @@
 package com.pe.courseproject;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,10 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TextFile {
-	private static String readFileContents(String fileName) {
+
+	private static String readFileContents(File file) {
 		StringBuilder sb = new StringBuilder();
 		try {
-			BufferedReader in = new BufferedReader(new FileReader(new File(fileName).getAbsoluteFile()));
+			BufferedReader in = new BufferedReader(new FileReader(file));
 			try {
 				String s;
 				
@@ -29,8 +31,8 @@ public class TextFile {
 		return sb.toString();
 	}
 	
-	public static Map<Character, Double> obtainCharactersProbabilityFromFile(String fileName) {
-		String text = readFileContents(fileName);
+	public static Map<Character, Double> obtainCharactersProbabilityFromFile(File file) {
+		String text = readFileContents(file);
 		Map<Character, Double> charMapping = new HashMap<Character, Double>();
 		for(int i = 0; i < text.length(); i++) {
 			char ch = text.charAt(i);
@@ -50,8 +52,8 @@ public class TextFile {
 	}
 	
 	public static void main(String[] args) {
-		for(Map.Entry<Character, Double> entry : obtainCharactersProbabilityFromFile("D:\\WORK\\esndirect.sql").entrySet()) {
+		/*for(Map.Entry<Character, Double> entry : obtainCharactersProbabilityFromFile("D:\\WORK\\esndirect.sql").entrySet()) {
 			System.out.printf("Charcter: %s, Occurences: %f\n", entry.getKey(), entry.getValue());
-		}
+		}*/
 	}
 }

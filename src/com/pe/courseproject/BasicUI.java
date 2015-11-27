@@ -1,3 +1,4 @@
+﻿package com.pe.courseproject;
 /**
  * Created by Nikolay on 26.11.2015 г..
  */
@@ -12,7 +13,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BasicUI extends Application {
 
@@ -23,12 +29,17 @@ public class BasicUI extends Application {
     private VBox vBox;
     private StackPane pane;
 
+    private Stage mainStage;
+
+    private Map<Character,Double> charMap;
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
         public void start(Stage primaryStage) {
+        mainStage = primaryStage;
         primaryStage.setTitle("Hello Genoff!");
 
         BorderPane layout = new BorderPane();
@@ -53,7 +64,7 @@ public class BasicUI extends Application {
         TextField path = new TextField();
 
         Button browseButton = new Button("Browse");
-        browseButton.setOnAction(event -> openFileChooser());
+        browseButton.setOnAction(event -> openFileChooser(path));
 
         Button actionButton = new Button("Do some cool stuff");
         actionButton.setOnAction(event -> processData());
@@ -67,7 +78,23 @@ public class BasicUI extends Application {
 
     }
 
-    private void openFileChooser() {
+    private void openFileChooser(TextField path) {
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        File file = fileChooser.showOpenDialog(mainStage);
+        if(file != null) {
+            path.setText(file.getAbsolutePath());
+            charMap = TextFile.obtainCharactersProbabilityFromFile(file);
+            CharacterList list = new CharacterList(charMap);
+            try {
+                System.out.println(list.getString(0,list.size()-1));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
 
     }
 }

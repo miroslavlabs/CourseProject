@@ -1,3 +1,5 @@
+﻿package com.pe.courseproject;
+
 import java.util.*;
 
 /**
@@ -8,10 +10,10 @@ public class CharacterList{
     private StringBuilder characterListAsString;
 
 
-    public CharacterList(HashMap<Character,Double> characters) {
+    public CharacterList(Map<Character,Double> characters) {
 
         //Create a List from a HashMap
-        for(HashMap.Entry<Character,Double> entry: characters.entrySet()){
+        for(Map.Entry<Character,Double> entry: characters.entrySet()){
             characterList.add(new CharacterItem(entry.getKey(), entry.getValue()));
         }
 
