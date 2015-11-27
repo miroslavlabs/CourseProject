@@ -1,4 +1,4 @@
-package com.pe.courseproject;
+
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,15 +9,20 @@ import java.util.Map;
 
 public class TextFile {
 
-	public static String readFileContents(File file) {
+	public static String readFileContents(File file, Boolean keepNewLines) {
 		StringBuilder sb = new StringBuilder();
+        String newLine;
+
+		if(keepNewLines) newLine = "\n";
+        else newLine = "";
+
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(file));
 			try {
 				String s;
 				
 				while((s = in.readLine()) != null) {
-					sb.append(s);
+					sb.append(s + newLine);
 				}
 			} finally {
 				in.close();
@@ -31,7 +36,7 @@ public class TextFile {
 	}
 	
 	public static Map<Character, Double> obtainCharactersProbability(File file) {
-		String text = readFileContents(file);
+		String text = readFileContents(file, false);
 		return obtainCharactersProbability(text);
 	}
 	

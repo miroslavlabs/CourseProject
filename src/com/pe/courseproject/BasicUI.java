@@ -1,4 +1,4 @@
-package com.pe.courseproject;
+
 
 /**
  * Created by Nikolay on 27.11.2015 г..
@@ -164,6 +164,13 @@ public class BasicUI extends Application {
     private void openFileChooser() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Resource File");
+
+        //Configure FileChooser filter
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Text Documents", "*.txt"),
+                new FileChooser.ExtensionFilter("All files (not recommended)", "*.*")
+        );
+
         file = fileChooser.showOpenDialog(mainStage);
     }
     
@@ -176,7 +183,7 @@ public class BasicUI extends Application {
         }
     	
     	path.setText(file.getAbsolutePath());
-    	fileContentsAsText.setText(TextFile.readFileContents(file));
+    	fileContentsAsText.setText(TextFile.readFileContents(file, true));
     	fileContentsPane.setContent(fileContentsAsText);
     }
 }

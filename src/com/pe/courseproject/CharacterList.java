@@ -1,4 +1,3 @@
-package com.pe.courseproject;
 
 /**
  * Created by Nikolay on 27.11.2015 г..
