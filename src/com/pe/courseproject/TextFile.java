@@ -1,3 +1,4 @@
+package com.pe.courseproject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,7 +9,7 @@ import java.util.Map;
 
 public class TextFile {
 
-	private static String readFileContents(File file) {
+	public static String readFileContents(File file) {
 		StringBuilder sb = new StringBuilder();
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(file));
@@ -29,8 +30,12 @@ public class TextFile {
 		return sb.toString();
 	}
 	
-	public static Map<Character, Double> obtainCharactersProbabilityFromFile(File file) {
+	public static Map<Character, Double> obtainCharactersProbability(File file) {
 		String text = readFileContents(file);
+		return obtainCharactersProbability(text);
+	}
+	
+	private static Map<Character, Double> obtainCharactersProbability(String text) {
 		Map<Character, Double> charMapping = new HashMap<Character, Double>();
 		for(int i = 0; i < text.length(); i++) {
 			char ch = text.charAt(i);
