@@ -1,4 +1,6 @@
-
+// COMMENT OUT THE PACKAGES IF THEY ARE CREATING DIFFICULTIES.
+// DO NOT DELETE!!!
+//package com.pe.courseproject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,13 +9,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A convenience class for reading and processing the data in a text file. 
+ */
 public class TextFile {
 
 	public static String readFileContents(File file, Boolean keepNewLines) {
 		StringBuilder sb = new StringBuilder();
         String newLine;
-
-		if(keepNewLines) newLine = "\n";
+        
+        // Since Java 7, there is a method that provides a platform-independent use of newline.
+		if(keepNewLines) newLine = System.lineSeparator();
         else newLine = "";
 
 		try {

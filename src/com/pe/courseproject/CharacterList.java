@@ -1,3 +1,6 @@
+// COMMENT OUT THE PACKAGES IF THEY ARE CREATING DIFFICULTIES.
+// DO NOT DELETE!!!
+//package com.pe.courseproject;
 
 /**
  * Created by Nikolay on 27.11.2015 г..
@@ -23,9 +26,6 @@ public class CharacterList {
 
         //Create a StringBuilder with all characters
         characterListAsString = convertListContentsToString();
-
-
-
     }
 
     public int size() {

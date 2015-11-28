@@ -1,27 +1,37 @@
-
+// COMMENT OUT THE PACKAGES IF THEY ARE CREATING DIFFICULTIES.
+// DO NOT DELETE!!!
+//package com.pe.courseproject;
 
 /**
  * Created by Nikolay on 27.11.2015 г..
  */
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class BasicUI extends Application {
@@ -29,23 +39,55 @@ public class BasicUI extends Application {
     public static final double SCENE_WIDTH = 1000;
     public static final double SCENE_HEIGHT = 700;
     
-    private static final String COLOR_WHITE = "rgb(255,255,255)";
+    private static final String RGB_WHITE = "rgb(255,255,255)";
+    private static final String HEX_MID_DARK_GRAY = "#545454";
+    private static final String HEX_WHITE = "#FFFFFF";
+    
+    private static final Font STANDARD_FONT = new Font("Arial", 14);
+    private static final Font TITLES_FONT = new Font("Arial", 18);
 
     private TreeView<String> tree;
-    private ScrollPane charProbabilityPane;
+    
+    private TableView<TableEntry> charProbabilityTable;
+    private TableColumn<TableEntry, String> characterTableColumn;
+    private TableColumn<TableEntry, String> probabilityTableColumn;
+    
     private StackPane treePane;
     private ScrollPane fileContentsPane;
-    private Text charProbabilityText;
     private Text fileContentsAsText;
     private TextField filePath;
     private Button browseButton, actionButton;
-
-    private CharacterList list;
 
     private Stage mainStage;
 
     private Map<Character,Double> charMap;
     private File file;
+    
+    public static class TableEntry {
+    	private final StringProperty character;
+    	private final StringProperty probability;
+    	
+    	public TableEntry(Character character, Double probability) {
+    		this.character = new SimpleStringProperty(Character.toString(character));
+    		this.probability = new SimpleStringProperty(Double.toString(probability));
+    	}
+    	
+    	public StringProperty characterProperty() {
+            return character; 
+        }
+    	
+    	public StringProperty probabilityProperty() {
+            return probability; 
+        }
+    	
+    	public String getCharacter() {
+    		return character.get();
+    	}
+    	
+    	public String getProbability() {
+    		return probability.get();
+    	}
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -57,7 +99,8 @@ public class BasicUI extends Application {
         primaryStage.setTitle("Character Probability Visualizer");
         
         BorderPane layout = new BorderPane();
-        layout.setStyle("-fx-background-color: #91a67c");
+        //FIXME: remove
+        //layout.setStyle("-fx-background-color: #91a67c");
         
         createFileChooserArea(layout);
         
@@ -82,44 +125,65 @@ public class BasicUI extends Application {
 
                 //Top Pane
                 filePath.setPrefWidth(newDoubleValue * 0.5);
-                browseButton.setPrefWidth(newDoubleValue * 0.15);
-                actionButton.setPrefWidth(newDoubleValue * 0.15);
 
                 //Left Pane
                 fileContentsPane.setPrefWidth(newDoubleValue * 0.3);
 		        fileContentsAsText.setWrappingWidth(newDoubleValue * 0.9 * 0.3);
 
                 //Center Pane
-		        treePane.setPrefWidth(newDoubleValue * 0.55);
+		        treePane.setPrefWidth(newDoubleValue * 0.5);
 
                 //Right Pane
-		        charProbabilityPane.setPrefWidth(newDoubleValue * 0.15);
+		        double tableWidth = newDoubleValue * 0.2;
+		        charProbabilityTable.setPrefWidth(newDoubleValue * 0.2);
+		        characterTableColumn.setPrefWidth(tableWidth * 0.35);
+		        probabilityTableColumn.setPrefWidth(tableWidth * 0.6);
+			}
+		});
+        
+        layout.heightProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
+				fileContentsPane.setPrefHeight(newValue.doubleValue());
+				charProbabilityTable.setPrefHeight(newValue.doubleValue());
 			}
 		});
         
         // Set margins for the scroll pane.
-        BorderPane.setMargin(fileContentsPane, new Insets(10,15,10,15));
         BorderPane.setMargin(treePane, new Insets(10,15,10,15));
-        BorderPane.setMargin(charProbabilityPane, new Insets(10,15,10,15));
+        BorderPane.setMargin(charProbabilityTable, new Insets(10,15,10,15));
         
         Scene scene = new Scene(layout, SCENE_WIDTH, SCENE_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    private void createCharDisplayArea(BorderPane layout) {
-        charProbabilityPane = new ScrollPane();
+    @SuppressWarnings("unchecked")
+	private void createCharDisplayArea(BorderPane layout) {
+    	Label label = new Label("Probability");
+    	label.setFont(TITLES_FONT);
+    	label.setTextFill(Color.web(HEX_MID_DARK_GRAY));
+    	
+    	//FIXME: remove
+        charProbabilityTable = new TableView<TableEntry>();
+        charProbabilityTable.setEditable(false);
+        
+        characterTableColumn = new TableColumn<TableEntry, String>("Character");
+        characterTableColumn.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("character"));
 
-        charProbabilityPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
-        charProbabilityPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        probabilityTableColumn = new TableColumn<TableEntry, String>("Probability");
+        probabilityTableColumn.setCellValueFactory(new PropertyValueFactory<TableEntry, String>("probability"));
+        
+        charProbabilityTable.getColumns().addAll(characterTableColumn, probabilityTableColumn);
+        
+        VBox innerLayout = new VBox();
+        innerLayout.setSpacing(5);
+        innerLayout.getChildren().addAll(label, charProbabilityTable);
+        innerLayout.setPadding(new Insets(10,15,10,15));
 
-        charProbabilityPane.setStyle("-fx-background: " + COLOR_WHITE);
-        charProbabilityPane.setPadding(new Insets(5,10,5,10));
-
-        charProbabilityText = new Text();
-        charProbabilityText.setFont(new Font("Arial", 14));
-
-        layout.setRight(charProbabilityPane);
+        layout.setRight(innerLayout);
     }
 
     /**
@@ -148,24 +212,22 @@ public class BasicUI extends Application {
         actionButton = new Button("Do some cool stuff");
         actionButton.setOnAction(event -> {
             processData();
-            updateCharProbabilityPane();
+            processTableData();
         });
 
         hBox.getChildren().addAll(filePath, browseButton, actionButton);
         layout.setTop(hBox);
     }
-
-    private void updateCharProbabilityPane() {
-        String chars = "";
-        if(list == null) return;
-        list.iterate();
-        while(list.hasNext()){
-            chars += list.getNext() + "\n";
-        }
-
-        charProbabilityText.setText(chars);
-        charProbabilityPane.setContent(charProbabilityText);
-
+    
+    private void processTableData() {
+    	if(file != null) {
+	    	List<TableEntry> charList = new ArrayList<TableEntry>();
+	    	for(Map.Entry<Character, Double> entry : charMap.entrySet()) {
+	    		charList.add(new TableEntry(entry.getKey(), entry.getValue()));
+	    	}
+	    	
+	    	charProbabilityTable.setItems(FXCollections.observableArrayList(charList));
+    	}
     }
 
     /**
@@ -173,33 +235,36 @@ public class BasicUI extends Application {
      * set as the left child of the BorderPane layout.
      */
     private void createFileContentsDisplayArea(BorderPane layout) {
+    	Label label = new Label("File Contents");
+    	label.setFont(TITLES_FONT);
+    	label.setTextFill(Color.web(HEX_MID_DARK_GRAY));
+    	//label.setStyle("-fx-font-color: " + HEX_WHITE);
     	// Create a scroll pane to allow for scrolling of long texts.
     	fileContentsPane = new ScrollPane();
         fileContentsPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
         // We do not wish to scroll the text horizontally and should disable the property.
         fileContentsPane.setHbarPolicy(ScrollBarPolicy.NEVER);
         //IMPORTANT: This is the only working solution to setting the background color of a scroll pane.
-        fileContentsPane.setStyle("-fx-background: " + COLOR_WHITE);
+        fileContentsPane.setStyle("-fx-background: " + RGB_WHITE);
         fileContentsPane.setPadding(new Insets(5,10,5,10));
         
         // Create the text element which will contain the file's contents as text information.
         fileContentsAsText = new Text();
-        fileContentsAsText.setFont(new Font("Arial", 14));
+        fileContentsAsText.setFont(STANDARD_FONT);
         
         fileContentsPane.setContent(fileContentsAsText);
-        layout.setLeft(fileContentsPane);
+        
+        VBox innerLayout = new VBox();
+        innerLayout.setSpacing(5);
+        innerLayout.getChildren().addAll(label, fileContentsPane);
+        innerLayout.setPadding(new Insets(10,15,10,15));
+        
+        layout.setLeft(innerLayout);
     }
-
-
+    
     private void processData() {
         if(file != null) {
             charMap = TextFile.obtainCharactersProbability(file);
-            list = new CharacterList(charMap);
-            try {
-                System.out.println(list.getString(0,list.size()-1));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
