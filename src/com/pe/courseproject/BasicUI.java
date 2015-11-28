@@ -11,15 +11,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -36,11 +32,15 @@ public class BasicUI extends Application {
     private static final String COLOR_WHITE = "rgb(255,255,255)";
 
     private TreeView<String> tree;
-    private VBox charProbabilityPane;
+    private ScrollPane charProbabilityPane;
     private StackPane treePane;
     private ScrollPane fileContentsPane;
+    private Text charProbabilityText;
     private Text fileContentsAsText;
-    private TextField path;
+    private TextField filePath;
+    private Button browseButton, actionButton;
+
+    private CharacterList list;
 
     private Stage mainStage;
 
@@ -65,9 +65,9 @@ public class BasicUI extends Application {
         
         treePane = new StackPane();//Print here a tree
         layout.setCenter(treePane);
-        
-        charProbabilityPane = new VBox();//Print here chars and their probability
-        layout.setRight(charProbabilityPane);
+
+        createCharDisplayArea(layout);//Print here chars and their probability
+
         
         // We do not want the panes to be fixed in size. If they are, this would mean that
         // when the stage is resized, the panes will remain with their initial sizes and the UI
@@ -78,25 +78,50 @@ public class BasicUI extends Application {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
 					Number oldValue, Number newValue) {
-				double newContentsPaneWidth = newValue.doubleValue() * 0.3;
-				fileContentsPane.setPrefWidth(newContentsPaneWidth);
-		        fileContentsAsText.setWrappingWidth(newContentsPaneWidth * 0.9);
-		        
-		        treePane.setPrefWidth(newContentsPaneWidth);
-		        
-		        charProbabilityPane.setPrefWidth(newContentsPaneWidth);
+				double newDoubleValue = newValue.doubleValue();
+
+                //Top Pane
+                filePath.setPrefWidth(newDoubleValue * 0.5);
+                browseButton.setPrefWidth(newDoubleValue * 0.15);
+                actionButton.setPrefWidth(newDoubleValue * 0.15);
+
+                //Left Pane
+                fileContentsPane.setPrefWidth(newDoubleValue * 0.3);
+		        fileContentsAsText.setWrappingWidth(newDoubleValue * 0.9 * 0.3);
+
+                //Center Pane
+		        treePane.setPrefWidth(newDoubleValue * 0.55);
+
+                //Right Pane
+		        charProbabilityPane.setPrefWidth(newDoubleValue * 0.15);
 			}
 		});
         
         // Set margins for the scroll pane.
         BorderPane.setMargin(fileContentsPane, new Insets(10,15,10,15));
         BorderPane.setMargin(treePane, new Insets(10,15,10,15));
+        BorderPane.setMargin(charProbabilityPane, new Insets(10,15,10,15));
         
         Scene scene = new Scene(layout, SCENE_WIDTH, SCENE_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    
+
+    private void createCharDisplayArea(BorderPane layout) {
+        charProbabilityPane = new ScrollPane();
+
+        charProbabilityPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+        charProbabilityPane.setHbarPolicy(ScrollBarPolicy.AS_NEEDED);
+
+        charProbabilityPane.setStyle("-fx-background: " + COLOR_WHITE);
+        charProbabilityPane.setPadding(new Insets(5,10,5,10));
+
+        charProbabilityText = new Text();
+        charProbabilityText.setFont(new Font("Arial", 14));
+
+        layout.setRight(charProbabilityPane);
+    }
+
     /**
      * Creates a file chooser display, set as the top element of the BorderPane layout.
      * @param layout
@@ -106,10 +131,11 @@ public class BasicUI extends Application {
         hBox.setPadding(new Insets(15, 15, 15, 15));
         hBox.setSpacing(5);
         
-        path = new TextField();
-        path.setEditable(false);
+        filePath = new TextField();
+        filePath.setEditable(false);
 
-        Button browseButton = new Button("Browse");
+
+        browseButton = new Button("Browse");
         browseButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
@@ -119,13 +145,29 @@ public class BasicUI extends Application {
 			}
 		});
 
-        Button actionButton = new Button("Do some cool stuff");
-        actionButton.setOnAction(event -> processData());
+        actionButton = new Button("Do some cool stuff");
+        actionButton.setOnAction(event -> {
+            processData();
+            updateCharProbabilityPane();
+        });
 
-        hBox.getChildren().addAll(path, browseButton, actionButton);
+        hBox.getChildren().addAll(filePath, browseButton, actionButton);
         layout.setTop(hBox);
     }
-    
+
+    private void updateCharProbabilityPane() {
+        String chars = "";
+        if(list == null) return;
+        list.iterate();
+        while(list.hasNext()){
+            chars += list.getNext() + "\n";
+        }
+
+        charProbabilityText.setText(chars);
+        charProbabilityPane.setContent(charProbabilityText);
+
+    }
+
     /**
      * Creates a pane that displays the contents of the text file that was selected. The pane is
      * set as the left child of the BorderPane layout.
@@ -152,7 +194,7 @@ public class BasicUI extends Application {
     private void processData() {
         if(file != null) {
             charMap = TextFile.obtainCharactersProbability(file);
-            CharacterList list = new CharacterList(charMap);
+            list = new CharacterList(charMap);
             try {
                 System.out.println(list.getString(0,list.size()-1));
             } catch (Exception e) {
@@ -182,7 +224,7 @@ public class BasicUI extends Application {
     		return;
         }
     	
-    	path.setText(file.getAbsolutePath());
+    	filePath.setText(file.getAbsolutePath());
     	fileContentsAsText.setText(TextFile.readFileContents(file, true));
     	fileContentsPane.setContent(fileContentsAsText);
     }

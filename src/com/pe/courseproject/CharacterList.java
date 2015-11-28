@@ -7,6 +7,9 @@ public class CharacterList {
     private List<CharacterItem> characterList = new ArrayList<CharacterItem>();
     private String characterListAsString;
 
+    private boolean iterable = false;
+    private int loopCounter = 0;
+
 
     public CharacterList(Map<Character, Double> characters) {
 
@@ -28,6 +31,23 @@ public class CharacterList {
     public int size() {
         return characterList.size();
     }
+
+    public void iterate(){
+        iterable = true;
+        loopCounter = 0;
+    }
+
+    public boolean hasNext(){
+        if(loopCounter >= characterList.size())
+            iterable = false;
+        return iterable;
+    }
+
+    public String getNext(){
+        if(!iterable) return null;
+        return characterList.get(loopCounter++).toString();
+    }
+
 
     //Converts a List to a StringBuilder
     private String convertListContentsToString() {
@@ -91,6 +111,11 @@ public class CharacterList {
 
         public double getProbability() {
             return probability;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%c -> [%.6f]",this.getCharacter(), this.getProbability());
         }
 
         @Override
