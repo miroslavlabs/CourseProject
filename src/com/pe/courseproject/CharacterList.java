@@ -11,6 +11,8 @@ public class CharacterList {
     private boolean iterable = false;
     private int loopCounter = 0;
 
+    public final int lastIndex;
+
 
     public CharacterList(Map<Character, Double> characters) {
 
@@ -24,11 +26,10 @@ public class CharacterList {
 
         //Create a StringBuilder with all characters
         characterListAsString = convertListContentsToString();
+
+        lastIndex = characterList.size()-1;
     }
 
-    public int size() {
-        return characterList.size();
-    }
 
     public void iterate(){
         iterable = true;
@@ -57,18 +58,18 @@ public class CharacterList {
     }
 
     //Returns a substring of characters from startIndex to endIndex from the List
-    public String getString(int startIndex, int endIndex) throws Exception {
+    public String getString(int startIndex, int endIndex) {
         return characterListAsString.substring(startIndex, endIndex + 1);
     }
 
     //Finds a middle index based on the probability of characters in the List
     //The middle index is the last index of the first half
-    public int findMiddleIndexBasedOnProbability(int startIndex, int endIndex) throws Exception {
+    public int findMiddleIndexBasedOnProbability(int startIndex, int endIndex) {
         int middleIndex = 0;
 
         //Valid input check
         if (startIndex < 0 || endIndex < 0)
-            throw new Exception("An index must be a possitive number");
+            throw new IndexOutOfBoundsException("An index must be a possitive number");
         if (endIndex > (characterList.size() - 1) || startIndex > (characterList.size() - 1))
             throw new IndexOutOfBoundsException("Index exceeds list size");
 

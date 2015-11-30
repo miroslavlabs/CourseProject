@@ -47,7 +47,8 @@ public class BasicUI extends Application {
     private static final Font STANDARD_FONT = new Font("Arial", 14);
     private static final Font TITLES_FONT = new Font("Arial", 18);
 
-    private TreeView<String> tree;
+    private TreeView<String> treeView;
+    private Tree charTree;
     
     private TableView<TableEntry> charProbabilityTable;
     private TableColumn<TableEntry, String> characterTableColumn;
@@ -269,6 +270,8 @@ public class BasicUI extends Application {
     private void processData() {
         if(file != null) {
             charMap = TextFile.obtainCharactersProbability(file);
+            CharacterList list = new CharacterList(charMap);
+            charTree = new Tree(list);
         }
     }
 
