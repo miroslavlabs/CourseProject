@@ -1,6 +1,4 @@
-// COMMENT OUT THE PACKAGES IF THEY ARE CREATING DIFFICULTIES.
-// DO NOT DELETE!!!
-//package com.pe.courseproject;
+package com.pe.courseproject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -64,10 +62,5 @@ public class TextFile {
 		
 		return charMapping;
 	}
-	
-	public static void main(String[] args) {
-		/*for(Map.Entry<Character, Double> entry : obtainCharactersProbabilityFromFile("D:\\WORK\\esndirect.sql").entrySet()) {
-			System.out.printf("Charcter: %s, Occurences: %f\n", entry.getKey(), entry.getValue());
-		}*/
-	}
+
 }

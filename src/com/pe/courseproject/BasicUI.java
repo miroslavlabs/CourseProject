@@ -1,6 +1,4 @@
-// COMMENT OUT THE PACKAGES IF THEY ARE CREATING DIFFICULTIES.
-// DO NOT DELETE!!!
-//package com.pe.courseproject;
+package com.pe.courseproject;
 
 /**
  * Created by Nikolay on 27.11.2015 г..
@@ -30,6 +28,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,8 @@ public class BasicUI extends Application {
 
     public static final double SCENE_WIDTH = 1000;
     public static final double SCENE_HEIGHT = 700;
+    public static final double MIN_WIDTH = 600;
+    public static final double MIN_HEIGHT = 450;
     
     private static final String RGB_WHITE = "rgb(255,255,255)";
     private static final String HEX_MID_DARK_GRAY = "#545454";
@@ -67,23 +68,23 @@ public class BasicUI extends Application {
     	private final StringProperty character;
     	private final StringProperty probability;
     	
-    	public TableEntry(Character character, Double probability) {
+    	public TableEntry(Character character, String probability) {
     		this.character = new SimpleStringProperty(Character.toString(character));
-    		this.probability = new SimpleStringProperty(Double.toString(probability));
+    		this.probability = new SimpleStringProperty(probability);
     	}
     	
     	public StringProperty characterProperty() {
             return character; 
         }
-    	
+
     	public StringProperty probabilityProperty() {
-            return probability; 
+            return probability;
         }
-    	
+
     	public String getCharacter() {
     		return character.get();
     	}
-    	
+
     	public String getProbability() {
     		return probability.get();
     	}
@@ -99,8 +100,6 @@ public class BasicUI extends Application {
         primaryStage.setTitle("Character Probability Visualizer");
         
         BorderPane layout = new BorderPane();
-        //FIXME: remove
-        //layout.setStyle("-fx-background-color: #91a67c");
         
         createFileChooserArea(layout);
         
@@ -135,9 +134,9 @@ public class BasicUI extends Application {
 
                 //Right Pane
 		        double tableWidth = newDoubleValue * 0.2;
-		        charProbabilityTable.setPrefWidth(newDoubleValue * 0.2);
+		        charProbabilityTable.setPrefWidth(tableWidth);
 		        characterTableColumn.setPrefWidth(tableWidth * 0.35);
-		        probabilityTableColumn.setPrefWidth(tableWidth * 0.6);
+		        probabilityTableColumn.setPrefWidth(tableWidth * 0.65);
 			}
 		});
         
@@ -156,6 +155,8 @@ public class BasicUI extends Application {
         BorderPane.setMargin(charProbabilityTable, new Insets(10,15,10,15));
         
         Scene scene = new Scene(layout, SCENE_WIDTH, SCENE_HEIGHT);
+        primaryStage.setMinWidth(MIN_WIDTH);
+        primaryStage.setMinHeight(MIN_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -221,12 +222,15 @@ public class BasicUI extends Application {
     
     private void processTableData() {
     	if(file != null) {
+            DecimalFormat format = new DecimalFormat("0.0000000000");
 	    	List<TableEntry> charList = new ArrayList<TableEntry>();
 	    	for(Map.Entry<Character, Double> entry : charMap.entrySet()) {
-	    		charList.add(new TableEntry(entry.getKey(), entry.getValue()));
+	    		charList.add(new TableEntry(entry.getKey(), format.format(entry.getValue())));
 	    	}
 	    	
 	    	charProbabilityTable.setItems(FXCollections.observableArrayList(charList));
+            probabilityTableColumn.setSortType(TableColumn.SortType.DESCENDING);
+            charProbabilityTable.getSortOrder().add(probabilityTableColumn);
     	}
     }
 
