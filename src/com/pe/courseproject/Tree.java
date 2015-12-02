@@ -1,15 +1,49 @@
 package com.pe.courseproject;
 
+import java.util.Map;
+
 /**
  * Created by Nikolay on 30.11.2015 г..
  */
 public class Tree {
     private Node root;
     private CharacterList list;
+    
+	public static class Node {
+	
+	    private String key;
+	    private Node leftNode, rightNode;
+	
+	    public Node(String key) {
+	        this.key = key;
+	    }
+	
+	    public void setLeftNode(Node leftNode) {
+	        this.leftNode = leftNode;
+	    }
+	
+	    public void setRightNode(Node rightNode) {
+	        this.rightNode = rightNode;
+	    }
+	    
+	    public String getKey() {
+	    	return key;
+	    }
 
-    public Tree(CharacterList list) {
+		public Node getLeftNode() {
+			// TODO Auto-generated method stub
+			return leftNode;
+		}
+
+		public Node getRightNode() {
+			// TODO Auto-generated method stub
+			return rightNode;
+		}
+	}
+
+    public Tree(Map<Character, Double> charProbabilityMap) {
         int middleIndex;
-        this.list = list;
+        this.list = new CharacterList(charProbabilityMap);
         this.root = new Node(list.getString(0, list.lastIndex));
 
         middleIndex = list.findMiddleIndexBasedOnProbability(0, list.lastIndex);
@@ -35,22 +69,4 @@ public class Tree {
         return child;
     }
 
-}
-
-class Node{
-
-    private String key;
-    private Node leftNode, rightNode;
-
-    public Node(String key) {
-        this.key = key;
-    }
-
-    public void setLeftNode(Node leftNode) {
-        this.leftNode = leftNode;
-    }
-
-    public void setRightNode(Node rightNode) {
-        this.rightNode = rightNode;
-    }
 }

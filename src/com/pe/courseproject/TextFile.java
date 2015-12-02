@@ -44,7 +44,7 @@ public class TextFile {
 		return obtainCharactersProbability(text);
 	}
 	
-	private static Map<Character, Double> obtainCharactersProbability(String text) {
+	public static Map<Character, Double> obtainCharactersProbability(String text) {
 		Map<Character, Double> charMapping = new HashMap<Character, Double>();
 		for(int i = 0; i < text.length(); i++) {
 			char ch = text.charAt(i);

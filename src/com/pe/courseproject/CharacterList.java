@@ -4,6 +4,7 @@ package com.pe.courseproject;
  * Created by Nikolay on 27.11.2015 г..
  */
 import java.util.*;
+
 public class CharacterList {
     private List<CharacterItem> characterList = new ArrayList<CharacterItem>();
     private String characterListAsString;
