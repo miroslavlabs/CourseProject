@@ -70,8 +70,8 @@ public class BasicUI extends Application {
     	private final StringProperty character;
     	private final StringProperty probability;
     	
-    	public TableEntry(Character character, String probability) {
-    		this.character = new SimpleStringProperty(Character.toString(character));
+    	public TableEntry(String character, String probability) {
+    		this.character = new SimpleStringProperty(character);
     		this.probability = new SimpleStringProperty(probability);
     	}
     	
@@ -325,7 +325,39 @@ public class BasicUI extends Application {
 	    	List<TableEntry> charList = new ArrayList<TableEntry>();
 	    	
 	    	for(Map.Entry<Character, Double> entry : charMap.entrySet()) {
-	    		charList.add(new TableEntry(entry.getKey(), format.format(entry.getValue())));
+
+                if(Character.isWhitespace(entry.getKey())){
+                    String whiteSpace = null;
+                    char ch = entry.getKey();
+                    switch(ch){
+                        case ' ': whiteSpace = "Space";
+                            break;
+                        case '\t': whiteSpace = "Horizontal Tab";
+                            break;
+                        case '\u000B': whiteSpace = "Vertical Tab";
+                            break;
+                        case '\n': whiteSpace = "Line Feed";
+                            break;
+                        case '\f': whiteSpace = "Form Feed";
+                            break;
+                        case '\r': whiteSpace = "Carriage Return";
+                            break;
+                        case '\u001C': whiteSpace = "File Separator";
+                            break;
+                        case '\u001D': whiteSpace = "Group Separator";
+                            break;
+                        case '\u001E': whiteSpace = "Record Separator";
+                            break;
+                        case '\u001F': whiteSpace = "Unit Separator";
+                            break;
+
+                    }
+                    if(whiteSpace != null){
+                        charList.add(new TableEntry(whiteSpace, format.format(entry.getValue())));
+                    }
+                }else {
+                    charList.add(new TableEntry(String.valueOf(entry.getKey()), format.format(entry.getValue())));
+                }
 	    	}
 	    	
 	    	charProbabilityTable.setItems(FXCollections.observableArrayList(charList));
